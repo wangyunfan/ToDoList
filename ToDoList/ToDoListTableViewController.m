@@ -9,6 +9,7 @@
 #import "ToDoListTableViewController.h"
 #import "ToDoItem.h"
 #import "AddToDoItemViewController.h"
+#import <CoreData/CoreData.h>
 
 @interface ToDoListTableViewController ()
 
@@ -21,19 +22,57 @@
 
 
 
--(void)loadInitialData{
 
-    ToDoItem *item1 = [[ToDoItem alloc]init];
-    item1.itemName = @"Buy Milk";
-    [self.toDoItems addObject:item1];
+
+
+
+-(void)loadInitialData{
     
-    ToDoItem *item2 = [[ToDoItem alloc]init];
-    item2.itemName = @"Buy egg";
-    [self.toDoItems addObject:item2];
+//    self.toDoItems = [[NSMutableArray alloc] init ];
+  
     
-    ToDoItem *item3 = [[ToDoItem alloc]init];
-    item3.itemName = @"Buy a book";
-    [self.toDoItems addObject:item3];
+    NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
+    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSString *docs = [NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES) lastObject];
+    NSURL *url = [NSURL fileURLWithPath:[docs stringByAppendingString:@"ToDoitem"]];
+    NSError *error = nil;
+    NSPersistentStore *store = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error];
+    if (store == nil) {
+        [NSException raise:@"添加数据库错误" format:@"%@",[error localizedDescription]];
+    }
+    
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc]init];
+    context.persistentStoreCoordinator = psc;
+    
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc]init];
+    request.entity = [NSEntityDescription entityForName:@"ToDoItem" inManagedObjectContext:context];
+    NSArray *objs = [context executeFetchRequest:request error:&error];
+    if (error) {
+        [NSException raise:@"查询错误" format:@"%@", [error localizedDescription]];
+    }
+    // 遍历数据
+    for (NSManagedObject *obj in objs) {
+        NSLog(@"name=%@", [obj valueForKey:@"itemName"]);
+        ToDoItem *item = [[ToDoItem alloc]init];
+        item.itemName = [obj valueForKey:@"itemName"];
+        
+        
+    }
+
+    
+//
+//    ToDoItem *item1 = [[ToDoItem alloc]init];
+//    item1.itemName = @"Buy Milk";
+//    [self.toDoItems addObject:item1];
+//    
+//    ToDoItem *item2 = [[ToDoItem alloc]init];
+//    item2.itemName = @"Buy egg";
+//    [self.toDoItems addObject:item2];
+//    
+//    ToDoItem *item3 = [[ToDoItem alloc]init];
+//    item3.itemName = @"Buy a book";
+//    [self.toDoItems addObject:item3];
     
     
 }
@@ -54,9 +93,38 @@
     [super viewDidLoad];
     
     
-    self.toDoItems = [[NSMutableArray alloc] init ];
-    
     [self loadInitialData];
+    
+    
+    NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
+    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSString *docs = [NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES) lastObject];
+    NSURL *url = [NSURL fileURLWithPath:[docs stringByAppendingString:@"ToDoitem"]];
+    NSError *error = nil;
+    NSPersistentStore *store = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error];
+    if (store == nil) {
+        [NSException raise:@"添加数据库错误" format:@"%@",[error localizedDescription]];
+    }
+    
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc]init];
+    context.persistentStoreCoordinator = psc;
+    
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc]init];
+    request.entity = [NSEntityDescription entityForName:@"ToDoItem" inManagedObjectContext:context];
+    NSArray *objs = [context executeFetchRequest:request error:&error];
+    if (error) {
+        [NSException raise:@"查询错误" format:@"%@", [error localizedDescription]];
+    }
+    // 遍历数据
+    for (NSManagedObject *obj in objs) {
+        NSLog(@"name=%@", [obj valueForKey:@"itemName"]);
+        ToDoItem *item = [[ToDoItem alloc]init];
+        item.itemName = [obj valueForKey:@"itemName"];
+        
+        
+    }
+
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -161,5 +229,34 @@
     [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
+
+
+-(void)test{
+    
+    NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
+    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSString *docs = [NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES) lastObject];
+    NSURL *url = [NSURL fileURLWithPath:[docs stringByAppendingString:@"ToDoitem"]];
+    NSError *error = nil;
+    NSPersistentStore *store = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error];
+    if (store == nil) {
+        [NSException raise:@"添加数据库错误" format:@"%@",[error localizedDescription]];
+    }
+    
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc]init];
+    context.persistentStoreCoordinator = psc;
+    
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc]init];
+    request.entity = [NSEntityDescription entityForName:@"ToDoItem" inManagedObjectContext:context];
+    NSArray *objs = [context executeFetchRequest:request error:&error];
+    if (error) {
+        [NSException raise:@"查询错误" format:@"%@", [error localizedDescription]];
+    }
+    // 遍历数据
+    for (NSManagedObject *obj in objs) {
+        NSLog(@"name=%@", [obj valueForKey:@"itemName"]);
+              }
+}
 
 @end

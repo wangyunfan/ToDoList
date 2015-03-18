@@ -13,7 +13,7 @@
 @interface ToDoItem : NSManagedObject
 
 @property (nonatomic, retain) NSString * itemName;
-@property (nonatomic, retain) NSNumber * completed;
+@property (nonatomic,assign) Boolean  completed;
 @property (nonatomic, retain) NSDate * creationDate;
 
 @end
