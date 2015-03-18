@@ -24,7 +24,6 @@
     if (self.textField.text.length > 0) {
         
         
-        
         NSManagedObjectModel *model = [NSManagedObjectModel mergedModelFromBundles:nil];
         NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
         NSString *docs = [NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES) lastObject];
@@ -42,30 +41,31 @@
         NSManagedObject *toDoItem = [NSEntityDescription insertNewObjectForEntityForName:@"ToDoItem" inManagedObjectContext:context];
         NSLog(@"1-------------------");
         
-       
-        
-//        self.toDoItem = [[ToDoItem alloc]init];
-//        self.toDoItem.itemName = self.textField.text;
-//        self.toDoItem.completed = false;
         [toDoItem setValue:self.textField.text forKey:@"itemName"];
-        [toDoItem setValue:false forKey:@"completed"];
+        [toDoItem setValue:0 forKey:@"completed"];
+        [toDoItem setValue:[self getCurrentTime] forKey:@"creationDate"];
         
         BOOL success = [context save:&error];
         if (!success) {
             [NSException raise:@"访问数据库失败" format:@"%@",[error localizedDescription]];
         }
         
-//        
-//        NSFetchRequest *request = [[NSFetchRequest alloc]init];
-//        request.entity = [NSEntityDescription entityForName:@"ToDoItem" inManagedObjectContext:context];
-//        NSArray *objs = [context executeFetchRequest:request error:&error];
-//        if (error) {
-//            [NSException raise:@"查询错误" format:@"%@", [error localizedDescription]];
-//        }
-//        // 遍历数据
-//        for (NSManagedObject *obj in objs) {
-//            NSLog(@"name=%@", [obj valueForKey:@"itemName"]);
-//        }
+        NSFetchRequest *request = [[NSFetchRequest alloc]init];
+        request.entity = [NSEntityDescription entityForName:@"ToDoItem" inManagedObjectContext:context];
+        NSArray *objs = [context executeFetchRequest:request error:&error];
+        if (error) {
+            [NSException raise:@"查询错误" format:@"%@", [error localizedDescription]];
+        }
+        // 遍历数据
+        for (NSManagedObject *obj in objs) {
+            NSLog(@"name=%@", [obj valueForKey:@"itemName"]);
+            NSLog(@"bool=%@", [obj valueForKey:@"completed"]);
+            NSLog(@"date=%@", [obj valueForKey:@"creationDate"]);
+
+            
+            
+            
+        }
 
         
  
@@ -82,6 +82,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(NSDate *)getCurrentTime{
+    NSDate *today = [NSDate date];
+    return today;
+}
 /*
 #pragma mark - Navigation
 

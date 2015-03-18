@@ -14,6 +14,6 @@
 
 @property (nonatomic, retain) NSString * itemName;
 @property (nonatomic,assign) Boolean  completed;
-@property (nonatomic, retain) NSDate * creationDate;
+@property (nonatomic, retain) NSString * creationDate;
 
 @end
